@@ -1,0 +1,54 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "dev.entao.app.task"
+        minSdk 22
+        targetSdk 31
+        versionCode 102
+        versionName "1.02"
+        archivesBaseName = "Task-" + versionCode
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+        debug {
+            minifyEnabled false
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+//        useIR = true
+    }
+    lint {
+        abortOnError false
+    }
+    namespace 'dev.entao.app'
+}
+
+dependencies {
+
+
+    api "org.jetbrains.kotlin:kotlin-stdlib"
+    api "org.jetbrains.kotlin:kotlin-reflect"
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'androidx.lifecycle:lifecycle-common:2.4.0'
+    implementation 'com.google.android.material:material:1.4.0'
+
+
+    api project(path: ':task')
+}
