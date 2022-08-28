@@ -1,0 +1,134 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+group nameGroup
+version nameVersion
+
+android {
+    namespace = "dev.entao.app.$nameAF"
+
+    compileSdk 32
+    defaultConfig {
+        minSdk 22
+        targetSdk 32
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+        debug {
+            minifyEnabled false
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    lint {
+        abortOnError false
+    }
+    publishing {
+        singleVariant("release")
+    }
+}
+
+
+task sourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from android.sourceSets.main.java.srcDirs
+}
+task docTask(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+}
+
+task docJarTask(type: Jar) {
+    archiveClassifier.set('javadoc')
+    from docTask.destinationDir
+}
+artifacts {
+    archives sourcesJar
+    archives docJarTask
+}
+
+ext["signing.keyId"] = SIG_KEY_ID
+ext["signing.password"] = SIG_PWD
+ext["signing.secretKeyRingFile"] = SIG_FILE
+
+afterEvaluate {
+    publishing {
+        repositories {
+            maven {
+                name = "App800"
+                url = 'http://maven.app800.cn/repository/public/'
+                allowInsecureProtocol(true)
+                credentials {
+                    username = ARCHIVA_USERNAME
+                    password = ARCHIVA_PASSWORD
+                }
+            }
+            maven {
+                name = "Sonatype"
+                url = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+                if (nameVersion.toLowerCase().contains("snap")) {
+                    url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+                }
+                allowInsecureProtocol(true)
+                credentials {
+                    username = MV_USER
+                    password = MV_PWD
+                }
+            }
+        }
+        publications {
+            release(MavenPublication) {
+                from components.release
+                artifact sourcesJar
+
+                groupId = nameGroup
+                version = nameVersion
+                artifactId = nameAF
+
+                pom {
+                    name = nameAF
+                    description = libDesc
+                    url = "https://github.com/yangentao/${nameGithub}"
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'yangentao'
+                            name = 'yangentao'
+                            email = 'entaoyang@163.com'
+                        }
+                    }
+                    scm {
+                        connection = "scm:git@github.com:yangentao/${nameGithub}.git"
+                        developerConnection = "scm:git@github.com:yangentao/${nameGithub}.git"
+                        url = "https://github.com/yangentao/${nameGithub}/tree/main"
+                    }
+//                    withXml {
+//                        def dependenciesNode = asNode().appendNode('dependencies')
+//                        project.configurations.implementation.allDependencies.each {
+//                            def dependencyNode = dependenciesNode.appendNode('dependency')
+//                            dependencyNode.appendNode('groupId', it.group)
+//                            dependencyNode.appendNode('artifactId', it.name)
+//                            dependencyNode.appendNode('version', it.version)
+//                        }
+//                    }
+                }
+            }
+        }
+    }
+    signing {
+        sign publishing.publications.release
+        sign configurations.archives
+    }
+}
+
