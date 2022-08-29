@@ -4,7 +4,7 @@ plugins {
 }
 ext {
     nameGroup = "dev.entao.app"
-    nameVersion = "0.6.0"
+    nameVersion = "0.7.0"
     nameAF = "task"
     nameGithub = "AppTask"
     libDesc = 'Android Library, provide in process message AND fore/back tasks.'
@@ -13,8 +13,6 @@ ext {
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'
-//    implementation 'androidx.appcompat:appcompat:1.4.0'
-//    implementation 'com.google.android.material:material:1.4.0'
 }
 
 apply from: "libcommon.gradle"
