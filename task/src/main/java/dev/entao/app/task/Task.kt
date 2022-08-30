@@ -48,11 +48,16 @@ fun mergeTask(key: String, delay: Long, block: () -> Unit) {
 object Task {
     val foreHandler: Handler by lazy { Handler(Looper.getMainLooper()) }
     val queueHandler: Handler by lazy { Handler(queueThread.looper) }
-    private val pool: ScheduledExecutorService by lazy {
-        Executors.newScheduledThreadPool(1) { r ->
-            PoolThread(r)
-        }
-    }
+
+    //    private val pool: ScheduledExecutorService by lazy {
+//        Executors.newScheduledThreadPool(1) { r ->
+//            PoolThread(r)
+//        }
+//    }
+    private val pool: ScheduledThreadPoolExecutor = ScheduledThreadPoolExecutor(1) { r ->
+        PoolThread(r)
+    }.apply { maximumPoolSize = 6 }
+
     private val queueThread: HandlerThread = HandlerThread("backQueue").apply { start() }
 
     val isMainThread: Boolean get() = Thread.currentThread().id == Looper.getMainLooper().thread.id

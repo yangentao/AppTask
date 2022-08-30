@@ -4,7 +4,7 @@ plugins {
 }
 ext {
     nameGroup = "dev.entao.app"
-    nameVersion = "0.7.0"
+    nameVersion = "0.7.1"
     nameAF = "task"
     nameGithub = "AppTask"
     libDesc = 'Android Library, provide in process message AND fore/back tasks.'
