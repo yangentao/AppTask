@@ -62,8 +62,7 @@ afterEvaluate {
         repositories {
             maven {
                 name = "App800"
-                url = 'http://maven.app800.cn/repository/public/'
-                allowInsecureProtocol(true)
+                url = 'https://app800.cn/maven/repository/public/'
                 credentials {
                     username = ARCHIVA_USERNAME
                     password = ARCHIVA_PASSWORD
